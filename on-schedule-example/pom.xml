@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>on-schedule-example</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Hadoop Card Docker Example</name>
+    <description>A simple project to demonstrate Apache Hadoop dependency in Maven</description>
+
+    <!-- Set the Java version -->
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- Apache Hadoop Common -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+
+        <!-- HBase Client -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId> <!-- Corrected groupId -->
+            <artifactId>hbase-client</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
+        <!-- HBase Common Utilities -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId> <!-- Corrected groupId -->
+            <artifactId>hbase-common</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
+        <!-- HBase Hadoop Compatibility -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId> <!-- Corrected groupId -->
+            <artifactId>hbase-hadoop-compat</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
+
+
+        <!-- Add additional dependencies here -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin to compile Java source files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin to create a jar file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.cards.OnScheduleDriver</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+</project>

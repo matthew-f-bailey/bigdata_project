@@ -1,0 +1,81 @@
+version: "3"
+
+services:
+
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    restart: always
+    ports:
+      - 9870:9870
+      - 9000:9000
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    restart: always
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+    env_file:
+      - ./hadoop.env
+
+  nodemanager1:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop.env
+
+  # hbase-docker:
+  #   build:
+  #     context: /home/matt/code/bigdata/docker-hadoop/hbase-docker/
+  #   container_name: hbase-docker
+  #   restart: always
+  #   volumes:
+  #     - /home/matt/code/bigdata/docker-hadoop/hbase-docker/data:/data # Adjust based on actual data directory usage
+  #     - /home/matt/code/bigdata/docker-hadoop/hbase-docker/hbase-site.xml:/opt/hbase/conf/hbase-site.xml
+  #     - /home/matt/code/bigdata/docker-hadoop/hbase-docker/zoo.cfg:/opt/hbase/conf/zoo.cfg
+  #   ports:
+  #     - 8080:8080
+  #     - 8085:8085
+  #     - 9090:9090
+  #     - 9095:9095
+  #     - 2181:2181
+  #     - 16010:16010
+  #   environment:
+  #     HBASE_VERSION: 2.2.4
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:
