@@ -44,7 +44,7 @@ public class OnScheduleMapper extends Mapper<LongWritable, Text, Text, IntWritab
         // Integer SecurityDelay = Integer.parseInt(fields[27]);
         // Integer LateAircraftDelay = Integer.parseInt(fields[28]);
 
-        if (ArrDelay > 10){
+        if (ArrDelay > 15){
             System.out.print(UniqueCarrier);
             context.write(new Text(UniqueCarrier), new IntWritable(1));
         } else {
