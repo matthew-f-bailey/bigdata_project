@@ -1,7 +1,11 @@
 package com.cards;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
@@ -39,6 +43,28 @@ public class OnScheduleDriver {
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, input);
         FileOutputFormat.setOutputPath(job, output);
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+        // Execute the job and wait for it to complete
+        boolean success = job.waitForCompletion(true);
+
+        if (success) {
+            System.out.println("Job completed successfully");
+
+            // Read data from the output path (optional)
+            FSDataInputStream inputStream = fs.open(output);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("Output: " + line);
+            }
+
+            reader.close();
+        } else {
+            System.out.println("Job failed");
+        }
+
+        // Exit the program with the appropriate status code
+        System.exit(success ? 0 : 1);
     }
 }
